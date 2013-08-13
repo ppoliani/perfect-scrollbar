@@ -7,7 +7,9 @@
   var defaultSettings = {
     wheelSpeed: 10,
     wheelPropagation: false,
-    minScrollbarLength: null
+    minScrollbarLength: null,
+    xAxis: false,
+    yAxis: true
   };
 
   $.fn.perfectScrollbar = function (suppliedSettings, option) {
@@ -51,18 +53,31 @@
       // Set class to the container
       $this.addClass('ps-container');
 
-      var $scrollbarX = $("<div class='ps-scrollbar-x'></div>").appendTo($this),
-          $scrollbarY = $("<div class='ps-scrollbar-y'></div>").appendTo($this),
+      var $scrollbarX = $(),
+          $scrollbarY = $(),
           containerWidth,
           containerHeight,
           contentWidth,
           contentHeight,
           scrollbarXWidth,
           scrollbarXLeft,
-          scrollbarXBottom = parseInt($scrollbarX.css('bottom'), 10),
+          scrollbarXBottom,
           scrollbarYHeight,
           scrollbarYTop,
-          scrollbarYRight = parseInt($scrollbarY.css('right'), 10);
+          scrollbarYRight;
+
+      var appendScrollBars = function () {
+        if (settings.xAxis) {
+            $scrollbarX = $("<div class='ps-scrollbar-x'></div>").appendTo($this);
+            scrollbarXBottom = parseInt($scrollbarX.css('bottom'), 10);
+        }
+        
+        if (settings.yAxis) {
+            $scrollbarY = $("<div class='ps-scrollbar-y'></div>").appendTo($this);
+            scrollbarYRight = parseInt($scrollbarY.css('right'), 10);
+        }
+               
+      };
 
       var updateContentScrollTop = function () {
         var scrollTop = parseInt(scrollbarYTop * (contentHeight - containerHeight) / (containerHeight - scrollbarYHeight), 10);
@@ -410,6 +425,7 @@
           ieSupport(parseInt(ieMatch[2], 10));
         }
 
+        appendScrollBars();
         updateBarSizeAndPosition();
         bindMouseScrollXHandler();
         bindMouseScrollYHandler();
